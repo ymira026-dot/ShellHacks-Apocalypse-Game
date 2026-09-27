@@ -1,240 +1,131 @@
-// All story content lives here, so new scenarios and choices are easy to add.
-const scenarios = [
-  {
-    title: "The First Night",
-    location: "Your apartment",
-    description: "You wake to screaming somewhere down the street. The power is out, your phone has no signal, and something is pounding against the front door.",
-    question: "What do you do?",
-    choices: [
-      { text: "Barricade the doors and stay inside.", consequence: "You drag the sofa across the door and wait in the dark. The pounding stops. For now.", effects: { supplies: 1, score: 10 }, next: 1 },
-      { text: "Grab your supplies and escape through the back door.", consequence: "The alley is clear. You slip away before the street notices you are gone.", effects: { supplies: -1, score: 15 }, next: 1 },
-      { text: "Investigate the noise.", consequence: "The hallway is empty, but a bloody handprint leads upstairs. You run before whatever made it returns.", effects: { health: -15, score: 8 }, next: 1 },
-      { text: "Try to help the people outside.", consequence: "The people outside are not people anymore. You barely make it back inside.", effects: { health: -25, score: 12 }, next: 1 }
-    ]
-  },
-  {
-    title: "The Empty Supermarket",
-    location: "Westside market",
-    description: "By morning, the supermarket has been stripped bare. A few cans glint behind the service counter, but a low growl rolls through the aisles.",
-    question: "How far will you go for supplies?",
-    choices: [
-      { text: "Search the staff room quietly.", consequence: "You find bottled water and a first-aid kit in a locker. The quiet way works.", effects: { supplies: 3, health: 5, score: 12 }, next: 2 },
-      { text: "Rush the shelves and take whatever you can carry.", consequence: "A jar hits the floor. You flee with food, but something bites through your jacket.", effects: { supplies: 4, health: -20, score: 18 }, next: 2 },
-      { text: "Leave before the growling gets closer.", consequence: "You leave empty-handed and hear the glass doors shatter behind you.", effects: { supplies: -1, score: 5 }, next: 2 }
-    ]
-  },
-  {
-    title: "The Roadblock",
-    location: "Highway 9",
-    description: "A line of abandoned cars chokes the highway. A flare burns beside a military truck. Someone waves from behind a barricade, but you cannot see their face.",
-    question: "Do you trust the roadblock?",
-    choices: [
-      { text: "Approach with your hands visible.", consequence: "The stranger is a frightened nurse, not a soldier. She gives you a map and points toward a safe route.", effects: { supplies: 1, score: 20 }, next: 3 },
-      { text: "Circle around through the woods.", consequence: "The woods hide a drainage ditch. You lose time, but not your life.", effects: { health: -5, score: 14 }, next: 3 },
-      { text: "Take the military truck by force.", consequence: "The truck is empty. The flare was a trap, and you escape only after a brutal sprint.", effects: { supplies: 2, health: -30, score: 25 }, next: 3 }
-    ]
-  },
-  {
-    title: "The Survivor",
-    location: "A roadside motel",
-    description: "A woman steps from a motel room with a kitchen knife and a little boy behind her. They have food, but the boy has a fever and she is out of medicine.",
-    question: "What do you offer?",
-    choices: [
-      { text: "Share your medicine and food.", consequence: "The boy's fever breaks by sunset. The woman joins you, carrying a flashlight and a hard-won trust.", effects: { supplies: -2, health: 8, score: 30 }, next: 4 },
-      { text: "Trade supplies for the motel room.", consequence: "The room is safe, but the woman leaves with only what she can carry. Her eyes stay with you.", effects: { supplies: -1, score: 16 }, next: 4 },
-      { text: "Keep walking. You cannot save everyone.", consequence: "You walk until the motel disappears behind you. The silence feels heavier than your pack.", effects: { score: 4 }, next: 4 }
-    ]
-  },
-  {
-    title: "The Abandoned Police Station",
-    location: "Central precinct",
-    description: "The police station is dark except for a red emergency light. Maps cover the walls, and a radio repeats one message: safe community, north of the river.",
-    question: "What do you search for?",
-    choices: [
-      { text: "Take the station's radio and maps.", consequence: "The radio crackles with a real voice. The safe community is still transmitting.", effects: { supplies: 1, score: 25 }, next: 5 },
-      { text: "Search the armory.", consequence: "You find ammunition and a locked medical cabinet, but the noise wakes the cells below.", effects: { supplies: 3, health: -15, score: 22 }, next: 5 },
-      { text: "Use the station as a shelter until dawn.", consequence: "You sleep in shifts. At 4:00 AM, the radio whispers a second message: do not trust the river.", effects: { health: 5, score: 18 }, next: 5 }
-    ]
-  },
-  {
-    title: "The Horde",
-    location: "River crossing",
-    description: "The river bridge is packed with the dead. They move like one dark tide, drawn by a distant alarm. Across the water, a lone boat rocks against its rope.",
-    question: "How do you cross?",
-    choices: [
-      { text: "Wait for the horde to pass.", consequence: "Hours later, the bridge opens. You cross on shaking legs as the last infected vanishes into the fog.", effects: { supplies: -1, score: 28 }, next: 6 },
-      { text: "Create a diversion with the car alarm.", consequence: "The horde turns. You reach the boat, but the alarm's echo follows you into the night.", effects: { health: -10, score: 35 }, next: 6 },
-      { text: "Swim for the boat.", consequence: "The current pulls you under. You reach the far bank coughing blood, but you reach it.", effects: { health: -35, supplies: 1, score: 32 }, next: 6 }
-    ]
-  },
-  {
-    title: "The Safehouse",
-    location: "North of the river",
-    description: "Lanterns glow behind a reinforced gate. The people inside have clean water and beds, but they will only open the gate for someone who can prove the infection has not reached them.",
-    question: "How do you earn their trust?",
-    choices: [
-      { text: "Show your wounds and tell the truth.", consequence: "They scan you, find no infection, and let you in. For the first time, a door opens from the other side.", effects: { health: 10, score: 40 }, next: 7 },
-      { text: "Offer your remaining supplies.", consequence: "The gate opens for your food. It is a steep price, but the community has a doctor.", effects: { supplies: -3, health: 25, score: 38 }, next: 7 },
-      { text: "Climb the wall after dark.", consequence: "A guard catches you and raises the alarm. You escape, but the safehouse marks your face.", effects: { health: -20, score: 12 }, next: 7 }
-    ]
-  },
-  {
-    title: "The Radio Signal",
-    location: "The safehouse attic",
-    description: "The radio comes alive with a voice from beyond the city. It says evacuation is possible at the old airport, but a second voice interrupts: the signal is bait.",
-    question: "Which voice do you believe?",
-    choices: [
-      { text: "Follow the evacuation signal.", consequence: "You choose the open road. The airport may be a trap, but staying means waiting for the walls to fail.", effects: { supplies: -1, score: 35 }, next: 8 },
-      { text: "Stay and help fortify the community.", consequence: "The gates hold through another night. The community names you one of its own.", effects: { health: 10, supplies: -1, score: 45 }, next: 8 },
-      { text: "Trace the second voice.", consequence: "The second voice is a survivor broadcasting from the airport control tower. They know the truth.", effects: { supplies: 1, score: 50 }, next: 8 }
-    ]
-  },
-  {
-    title: "The Final Escape",
-    location: "The old airport",
-    description: "Smoke boils over the runway. A battered transport plane waits with one engine turning, while infected figures spill through the terminal doors.",
-    question: "What is your last move?",
-    choices: [
-      { text: "Run for the plane.", consequence: "You sprint through the smoke as the plane lifts. The city shrinks below you, burning and silent.", effects: { health: -15, score: 60 }, next: 9 },
-      { text: "Hold the terminal doors for the others.", consequence: "You buy the survivors enough time to board. When the doors finally break, the plane is already gone.", effects: { health: -45, score: 75 }, next: 9 },
-      { text: "Search the control tower for answers.", consequence: "The tower log reveals the outbreak was reported weeks before the first bite. Someone knew.", effects: { health: -25, score: 70 }, next: 9 }
-    ]
-  },
-  {
-    title: "The Last Choice",
-    location: "Above the clouds",
-    description: "The plane clears the smoke. Below, the city is a constellation of fires. Ahead, a green light pulses from a coastline that should be empty.",
-    question: "What will you carry into tomorrow?",
-    choices: [
-      { text: "Trust the light and land.", consequence: "A safe community welcomes the plane. The world is wounded, but you have found a place to begin again.", effects: { score: 30 }, ending: "community" },
-      { text: "Keep flying beyond the signal.", consequence: "You leave the continent behind. On the horizon, another city glows with the same red emergency lights.", effects: { score: 45 }, ending: "mystery" },
-      { text: "Turn back for the people below.", consequence: "The plane turns toward the smoke. There are still voices on the radio, and someone has to answer.", effects: { score: 55 }, ending: "sacrifice" }
-    ]
-  }
+const story = [
+  { title: "The First Night", place: "Your apartment", text: "You wake to screaming down the street. The power is out and something is pounding against your front door.", question: "What do you do?", choices: [
+    { text: "Barricade the doors and wait.", result: "The pounding stops. In the kitchen, you find a flashlight and a can of beans.", gain: { food: 1, item: "Flashlight", score: 10 } },
+    { text: "Escape through the back door.", result: "The alley is clear. You slip away with a bottle of water from your emergency kit.", gain: { water: 1, item: "Pocket knife", score: 15 } },
+    { text: "Investigate the noise.", result: "A bloody handprint leads upstairs. You run, but something catches your arm.", effect: { health: -20, score: 8 } }
+  ] },
+  { title: "The Empty Supermarket", place: "Westside market", text: "The supermarket has been stripped bare. A low growl rolls through the dark aisles, but cans glint behind the counter.", question: "How far will you go for supplies?", choices: [
+    { text: "Search the staff room quietly.", result: "You find a first-aid kit, food, and bottled water in a locker.", gain: { food: 3, water: 2, item: "First-aid kit", score: 18 } },
+    { text: "Rush the shelves.", result: "A jar hits the floor. You escape with food, but a bite tears through your jacket.", gain: { food: 4, score: 20 }, effect: { health: -20 } },
+    { text: "Leave immediately.", result: "You leave empty-handed as the glass doors shatter behind you.", effect: { score: 5 } }
+  ] },
+  { title: "The Roadblock", place: "Highway 9", text: "Abandoned cars choke the highway. A flare burns beside a military truck. Someone waves from behind a barricade.", question: "Do you trust the stranger?", choices: [
+    { text: "Approach with your hands visible.", result: "She is a nurse, not a soldier. She gives you a map and two bottles of water.", gain: { water: 2, item: "Map", score: 22 } },
+    { text: "Circle around through the woods.", result: "The woods hide a drainage ditch. You lose time, but not your life.", effect: { health: -5, score: 14 } },
+    { text: "Take the truck by force.", result: "The truck is empty. The flare was a trap.", gain: { food: 1, score: 25 }, effect: { health: -25 } }
+  ] },
+  { title: "The Survivor", place: "A roadside motel", text: "A woman stands in a motel doorway with a child behind her. They have a safe room, but the child has a fever.", question: "What do you offer?", choices: [
+    { text: "Share food and medicine.", result: "The fever breaks. The woman joins you with a flashlight and a hard-won trust.", gain: { item: "Antibiotics", score: 30 }, effect: { health: 8 } },
+    { text: "Trade supplies for the room.", result: "The room is safe, but the woman leaves with only what she can carry.", gain: { food: 1, score: 16 } },
+    { text: "Keep walking.", result: "You walk until the motel disappears. The silence feels heavier than your pack.", effect: { score: 4 } }
+  ] },
+  { title: "The Police Station", place: "Central precinct", text: "A red emergency light flickers over maps and empty desks. A radio repeats one message: safe community north of the river.", question: "What do you search for?", choices: [
+    { text: "Take the radio and maps.", result: "The radio crackles with a real voice. The safe community is still transmitting.", gain: { item: "Radio", score: 25 } },
+    { text: "Search the armory.", result: "You find supplies, but the noise wakes the cells below.", gain: { food: 2, score: 22 }, effect: { health: -15 } },
+    { text: "Sleep until dawn.", result: "At 4 AM, the radio whispers: do not trust the river.", effect: { health: 5, score: 18 } }
+  ] },
+  { title: "The Horde", place: "River crossing", text: "The bridge is packed with the dead. Across the water, a lone boat rocks against its rope.", question: "How do you cross?", choices: [
+    { text: "Wait for the horde to pass.", result: "Hours later, the bridge opens. You cross in the fog.", effect: { score: 28 } },
+    { text: "Create a diversion.", result: "The horde turns toward the alarm. You reach the boat.", effect: { health: -10, score: 35 } },
+    { text: "Swim for the boat.", result: "The current pulls you under. You reach the far bank coughing blood.", gain: { water: 1, score: 32 }, effect: { health: -30 } }
+  ] },
+  { title: "The Safehouse", place: "North of the river", text: "Lanterns glow behind a reinforced gate. The people inside demand proof that you are not infected.", question: "How do you earn their trust?", choices: [
+    { text: "Tell the truth about your wounds.", result: "They scan you and open the gate. A door opens from the other side.", effect: { health: 10, score: 40 } },
+    { text: "Offer your remaining food.", result: "The gate opens. A community doctor treats your injuries.", effect: { health: 25, score: 38 } },
+    { text: "Climb the wall at night.", result: "A guard catches you. You escape, but the safehouse marks your face.", effect: { health: -20, score: 12 } }
+  ] },
+  { title: "The Last Choice", place: "Above the clouds", text: "The plane clears the smoke. Ahead, a green light pulses from a coastline that should be empty.", question: "What will you carry into tomorrow?", choices: [
+    { text: "Trust the light and land.", result: "A safe community welcomes you. The world is wounded, but you have a place to begin again.", ending: ["A New Beginning", "You found the safe shore. Strangers become family, and the first new morning arrives."], effect: { score: 40 } },
+    { text: "Fly beyond the signal.", result: "Another city glows with the same red emergency lights. The radio whispers your name.", ending: ["Beyond The Signal", "The outbreak was never contained. Your journey continues into the unknown."], effect: { score: 50 } },
+    { text: "Turn back for the people below.", result: "You turn into the storm. The others live because someone chose to return.", ending: ["The Last Stand", "Your final transmission becomes a promise that someone will answer."], effect: { score: 60 } }
+  ] }
 ];
 
-const state = { health: 100, supplies: 5, score: 0, scenarioIndex: 0 };
-const elements = {
-  intro: document.getElementById("intro-view"),
-  scenario: document.getElementById("scenario-view"),
-  ending: document.getElementById("ending-view"),
-  status: document.getElementById("status-bar"),
-  title: document.getElementById("scenario-title"),
-  description: document.getElementById("scenario-description"),
-  question: document.getElementById("scenario-question"),
-  choices: document.getElementById("choices"),
-  consequence: document.getElementById("consequence"),
-  consequenceText: document.getElementById("consequence-text"),
-  count: document.getElementById("scenario-count"),
-  location: document.getElementById("scenario-location"),
-  health: document.getElementById("health-value"),
-  supplies: document.getElementById("supplies-value"),
-  score: document.getElementById("score-value"),
-  endingKicker: document.getElementById("ending-kicker"),
-  endingTitle: document.getElementById("ending-title"),
-  endingDescription: document.getElementById("ending-description"),
-  finalStats: document.getElementById("final-stats")
-};
+const player = { health: 100, hunger: 100, thirst: 100, score: 0, index: 0, food: 2, water: 2, items: [] };
+const $ = (id) => document.getElementById(id);
 
-// Begin a fresh run and show the first scenario.
 function startGame() {
-  state.health = 100;
-  state.supplies = 5;
-  state.score = 0;
-  state.scenarioIndex = 0;
-  elements.intro.hidden = true;
-  elements.ending.hidden = true;
-  elements.scenario.hidden = false;
-  elements.status.hidden = false;
-  displayScenario();
+  player.health = 100; player.hunger = 100; player.thirst = 100; player.score = 0; player.index = 0; player.food = 2; player.water = 2; player.items = [];
+  $("intro").hidden = true; $("ending").hidden = true; $("story").hidden = false; $("stats").hidden = false;
+  showScenario();
 }
 
-// Fill the game screen from the current scenario in the data above.
-function displayScenario() {
-  const currentScenario = scenarios[state.scenarioIndex];
-  elements.count.textContent = `Scenario ${String(state.scenarioIndex + 1).padStart(2, "0")} / ${scenarios.length}`;
-  elements.location.textContent = currentScenario.location;
-  elements.title.textContent = currentScenario.title;
-  elements.description.textContent = currentScenario.description;
-  elements.question.textContent = currentScenario.question;
-  elements.choices.innerHTML = "";
-  elements.consequence.hidden = true;
-  currentScenario.choices.forEach((choice, choiceIndex) => {
-    const button = document.createElement("button");
-    button.className = "choice-button";
-    button.type = "button";
-    button.textContent = choice.text;
-    button.addEventListener("click", () => handleChoice(choice, choiceIndex));
-    elements.choices.appendChild(button);
+function showScenario() {
+  const scene = story[player.index];
+  $("progress").textContent = `Scenario ${player.index + 1} / ${story.length} - ${scene.place}`;
+  $("title").textContent = scene.title; $("description").textContent = scene.text; $("question").textContent = scene.question;
+  $("result").hidden = true; $("choices").innerHTML = "";
+  scene.choices.forEach((choice, index) => {
+    $("choices").insertAdjacentHTML("beforeend", `<button class="choice" type="button" onclick="choose(${index})">${choice.text}</button>`);
   });
-  updateStats();
+  updateDisplay();
 }
 
-// Apply a choice, show its consequence, and wait for the player to continue.
-function handleChoice(choice) {
-  updateStats(choice.effects);
-  [...elements.choices.children].forEach((button) => { button.disabled = true; });
-  elements.consequenceText.textContent = choice.consequence;
-  elements.consequence.hidden = false;
-  elements.consequence.dataset.next = choice.next ?? "";
-  elements.consequence.dataset.ending = choice.ending ?? "";
-  if (state.health <= 0) {
-    elements.consequenceText.textContent += " Your strength leaves you before you can go any further.";
-    elements.consequence.dataset.next = "dead";
-  }
+function choose(choiceIndex) {
+  const choice = story[player.index].choices[choiceIndex];
+  if (!choice) return;
+  const outcome = adaptiveOutcome(choice);
+  applyEffect(outcome.effect); collect(outcome.gain);
+  player.hunger = Math.max(0, player.hunger - 12); player.thirst = Math.max(0, player.thirst - 16);
+  $("choices").innerHTML = ""; $("result-text").textContent = `${outcome.result} ${describeChanges(outcome)}`; $("result").hidden = false; updateDisplay();
+  $("result").dataset.next = outcome.ending ? "ending" : "next"; $("result").dataset.endingTitle = outcome.ending ? outcome.ending[0] : ""; $("result").dataset.endingCopy = outcome.ending ? outcome.ending[1] : "";
+  if (player.health <= 0 || player.hunger <= 0 || player.thirst <= 0) { $("result-text").textContent += " You cannot continue."; $("result").dataset.next = "dead"; }
 }
 
-// Change only the stats supplied by a choice and keep values readable.
-function updateStats(effects = {}) {
-  state.health += effects.health || 0;
-  state.supplies += effects.supplies || 0;
-  state.score += effects.score || 0;
-  state.health = Math.max(0, state.health);
-  state.supplies = Math.max(0, state.supplies);
-  elements.health.textContent = state.health;
-  elements.supplies.textContent = state.supplies;
-  elements.score.textContent = state.score;
+function nextScenario() {
+  if ($("result").dataset.next === "dead") return showEnding("You Did Not Survive", "The outbreak takes another survivor. Your story ends here.");
+  if ($("result").dataset.next === "ending") return showEnding($("result").dataset.endingTitle, $("result").dataset.endingCopy);
+  player.index += 1; showScenario();
 }
 
-function continueStory() {
-  const next = elements.consequence.dataset.next;
-  const ending = elements.consequence.dataset.ending;
-  if (next === "dead") {
-    displayEnding("dead");
-  } else if (ending) {
-    displayEnding(ending);
-  } else {
-    state.scenarioIndex = Number(next);
-    displayScenario();
-  }
+function applyEffect(effect) { player.health = Math.max(0, Math.min(100, player.health + (effect.health || 0))); player.score += effect.score || 0; }
+function collect(gain) { player.food += gain.food || 0; player.water += gain.water || 0; player.score += gain.score || 0; if (gain.item && !player.items.includes(gain.item)) player.items.push(gain.item); }
+function adaptiveOutcome(choice) {
+  const healthLoss = choice.effect && choice.effect.health < 0;
+  const outcome = { ...choice, effect: { ...(choice.effect || {}) }, gain: { ...(choice.gain || {}) } };
+  const branches = healthLoss ? [
+    { text: "The plan works, but the cost is worse than expected.", effect: { health: -10 } },
+    { text: "You get away by seconds. A stranger's warning prevents the worst of it.", effect: { health: 5 }, gain: { water: 1 } },
+    { text: "The danger breaks your momentum, and something follows you into the next street.", effect: { health: -5 }, gain: { food: 1 } },
+    { text: "A small detail changes everything. You survive, and find something useful in the confusion.", effect: { score: 10 }, gain: { item: "Lucky charm" } }
+  ] : [
+    { text: "For one night, preparation beats panic.", effect: { score: 5 } },
+    { text: "Luck opens a narrow door, and you are quick enough to use it.", effect: { health: 5 }, gain: { food: 1 } },
+    { text: "The survivors you pass leave you a little more than they took.", effect: { score: 10 }, gain: { water: 1 } },
+    { text: "The choice changes the shape of the night in your favor.", effect: { health: -5 }, gain: { item: "Unmarked key" } }
+  ];
+  const branch = branches[Math.floor(Math.random() * branches.length)];
+  outcome.result = `${choice.result} ${branch.text}`;
+  outcome.effect.health = (outcome.effect.health || 0) + (branch.effect.health || 0);
+  outcome.effect.score = (outcome.effect.score || 0) + (branch.effect.score || 0);
+  outcome.gain.food = (outcome.gain.food || 0) + (branch.gain?.food || 0);
+  outcome.gain.water = (outcome.gain.water || 0) + (branch.gain?.water || 0);
+  if (branch.gain?.item && !outcome.gain.item) outcome.gain.item = branch.gain.item;
+  return outcome;
 }
 
-// Show an ending based on the player's final decision or health.
-function displayEnding(type) {
-  const endings = {
-    dead: { kicker: "Survival failed", title: "The City Takes You", description: "Your story ends beneath the noise of the outbreak. Somewhere, another survivor hears the same pounding at the door." },
-    community: { kicker: "Ending / A New Beginning", title: "The Safe Shore", description: "The green light belongs to a coastal settlement. You step onto solid ground with strangers who might become family." },
-    mystery: { kicker: "Ending / Unknown Transmission", title: "Beyond The Signal", description: "The next city is not dark. It is waiting. As the plane descends, the radio begins to whisper your name." },
-    sacrifice: { kicker: "Ending / The Last Stand", title: "The Voice That Answered", description: "You turn back into the storm. The others live because you chose to return, and your final transmission becomes a promise." }
-  };
-  const ending = endings[type];
-  elements.scenario.hidden = true;
-  elements.status.hidden = true;
-  elements.ending.hidden = false;
-  elements.endingKicker.textContent = ending.kicker;
-  elements.endingTitle.textContent = ending.title;
-  elements.endingDescription.textContent = ending.description;
-  elements.finalStats.innerHTML = `<div class="stat"><span>Final health</span><strong>${state.health}</strong></div><div class="stat"><span>Supplies</span><strong>${state.supplies}</strong></div><div class="stat"><span>Score</span><strong>${state.score}</strong></div>`;
+function describeChanges(choice) {
+  const changes = [];
+  const effect = choice.effect || {};
+  const gain = choice.gain || {};
+  if (effect.health) changes.push(`Health ${effect.health > 0 ? "+" : ""}${effect.health}`);
+  if (gain.food) changes.push(`Food +${gain.food}`);
+  if (gain.water) changes.push(`Water +${gain.water}`);
+  if (gain.item) changes.push(`Found: ${gain.item}`);
+  if (effect.score) changes.push(`Score +${effect.score}`);
+  changes.push("Hunger -12", "Thirst -16");
+  return changes.length ? `(${changes.join(" | ")})` : "";
 }
+function eatFood() { if (player.food < 1 || player.hunger >= 100) return; player.food--; player.hunger = Math.min(100, player.hunger + 35); updateDisplay(); }
+function drinkWater() { if (player.water < 1 || player.thirst >= 100) return; player.water--; player.thirst = Math.min(100, player.thirst + 40); updateDisplay(); }
+function updateDisplay() { $("health").textContent = player.health; $("hunger").textContent = player.hunger; $("thirst").textContent = player.thirst; $("score").textContent = player.score; $("food").textContent = player.food; $("water").textContent = player.water; $("inventory-count").textContent = `Food ${player.food} / Water ${player.water}`; $("items").innerHTML = player.items.length ? player.items.map((item) => `<span>${item}</span>`).join("") : "<span>No special items</span>"; $("eat").disabled = player.food < 1 || player.hunger >= 100; $("drink").disabled = player.water < 1 || player.thirst >= 100; }
+function showEnding(title, copy) { $("story").hidden = true; $("stats").hidden = true; $("ending").hidden = false; $("ending-label").textContent = title === "You Did Not Survive" ? "Survival failed" : "Transmission complete"; $("ending-title").textContent = title; $("ending-copy").textContent = copy; $("final-stats").innerHTML = `<div><small>Health</small><b>${player.health}</b></div><div><small>Hunger</small><b>${player.hunger}</b></div><div><small>Thirst</small><b>${player.thirst}</b></div><div><small>Score</small><b>${player.score}</b></div>`; }
+function restartGame() { $("ending").hidden = true; $("story").hidden = true; $("stats").hidden = true; $("intro").hidden = false; }
 
-// Return to the opening screen without reloading the page.
-function restartGame() {
-  elements.ending.hidden = true;
-  elements.status.hidden = true;
-  elements.scenario.hidden = true;
-  elements.intro.hidden = false;
-}
-
-document.getElementById("start-button").addEventListener("click", startGame);
-document.getElementById("continue-button").addEventListener("click", continueStory);
-document.getElementById("restart-button").addEventListener("click", restartGame);
+// Explicit window exports keep inline buttons working in every static hosting environment.
+window.startGame = startGame;
+window.choose = choose;
+window.nextScenario = nextScenario;
+window.eatFood = eatFood;
+window.drinkWater = drinkWater;
+window.restartGame = restartGame;

@@ -1,65 +1,68 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="The Last Day - a zombie apocalypse survival story.">
-  <title>The Last Day | Survival Story</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Last Day</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 <body>
-  <div class="atmosphere" aria-hidden="true"></div>
-  <main class="game-shell">
-    <section class="game-card" aria-live="polite">
-      <header class="game-header">
+  <main class="app">
+    <section class="panel">
+      <header class="header">
         <p class="eyebrow">A survival story</p>
         <h1>THE LAST DAY</h1>
-        <div class="status-bar" id="status-bar" hidden>
-          <div class="stat"><span>Health</span><strong id="health-value">100</strong></div>
-          <div class="stat"><span>Supplies</span><strong id="supplies-value">5</strong></div>
-          <div class="stat"><span>Score</span><strong id="score-value">0</strong></div>
+        <div id="stats" class="stats" hidden>
+          <div><small>Health</small><b id="health">100</b></div>
+          <div><small>Hunger</small><b id="hunger">100</b></div>
+          <div><small>Thirst</small><b id="thirst">100</b></div>
+          <div><small>Score</small><b id="score">0</b></div>
         </div>
       </header>
 
-      <div class="screen" id="game-screen">
-        <section class="intro-view" id="intro-view">
-          <p class="kicker">Day 01 / 06:17 PM</p>
-          <h2>The dead have risen.<br><em>What will you do?</em></h2>
-          <p class="intro-copy">Civilization is collapsing. Every quiet street hides a choice, and every choice leaves a mark.</p>
-          <button class="primary-button" id="start-button" type="button">Start Survival <span aria-hidden="true">→</span></button>
-        </section>
+      <section id="intro" class="view">
+        <p class="label">Day 01 / 06:17 PM</p>
+        <h2>The dead have risen.<br><em>What will you do?</em></h2>
+        <p class="copy">Civilization is collapsing. Every quiet street hides a choice, and every choice leaves a mark.</p>
+        <button class="primary" onclick="startGame()">START SURVIVAL</button>
+      </section>
 
-        <section class="scenario-view" id="scenario-view" hidden>
-          <div class="scenario-meta">
-            <span id="scenario-count">Scenario 01 / 10</span>
-            <span class="location-dot" aria-hidden="true"></span>
-            <span id="scenario-location">Downtown</span>
-          </div>
-          <h2 id="scenario-title"></h2>
-          <p class="scenario-description" id="scenario-description"></p>
-          <p class="scenario-question" id="scenario-question"></p>
-          <div class="choices" id="choices"></div>
-          <div class="consequence" id="consequence" hidden>
-            <span class="consequence-label">Consequence</span>
-            <p id="consequence-text"></p>
-            <button class="continue-button" id="continue-button" type="button">Continue <span aria-hidden="true">→</span></button>
-          </div>
-        </section>
+      <section id="story" class="view" hidden>
+        <p id="progress" class="label"></p>
+        <h2 id="title"></h2>
+        <p id="description" class="copy"></p>
+        <p id="question" class="question"></p>
 
-        <section class="ending-view" id="ending-view" hidden>
-          <p class="kicker" id="ending-kicker">Transmission complete</p>
-          <h2 id="ending-title"></h2>
-          <p class="ending-copy" id="ending-description"></p>
-          <div class="final-stats" id="final-stats"></div>
-          <button class="primary-button" id="restart-button" type="button">Play Again <span aria-hidden="true">↻</span></button>
-        </section>
-      </div>
-      <footer class="game-footer">No map. No backup. Just one more night.</footer>
+        <div class="inventory">
+          <div class="inventory-top"><strong>Inventory</strong><span id="inventory-count">Food 2 / Water 2</span></div>
+          <div id="items" class="items"></div>
+          <div class="use-actions">
+            <button id="eat" onclick="eatFood()">Eat food <span id="food">2</span></button>
+            <button id="drink" onclick="drinkWater()">Drink water <span id="water">2</span></button>
+          </div>
+        </div>
+
+        <div id="choices" class="choices"></div>
+        <div id="result" class="result" hidden>
+          <small id="result-label">ADAPTIVE CONSEQUENCE</small>
+          <p id="result-text"></p>
+          <button class="continue" onclick="nextScenario()">CONTINUE</button>
+        </div>
+      </section>
+
+      <section id="ending" class="view" hidden>
+        <p id="ending-label" class="label"></p>
+        <h2 id="ending-title"></h2>
+        <p id="ending-copy" class="copy"></p>
+        <div id="final-stats" class="final-stats"></div>
+        <button class="primary" onclick="restartGame()">PLAY AGAIN</button>
+      </section>
+      <footer>No map. No backup. Just one more night.</footer>
     </section>
   </main>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
